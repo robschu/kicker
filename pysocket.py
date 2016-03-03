@@ -7,7 +7,7 @@ import RPi.GPIO as GPIO
 import time
 import pygame
 import json
-
+from game import Game
 ######################################################################
 #####################           GPIO          ########################
 ######################################################################
@@ -91,8 +91,8 @@ if __name__ == "__main__":
 ################### WEbsocket Nachricht an alle #####################
 #####################################################################
 ############## Konstanten ###########################################
-	INTERVAL_MSEC = 200
-
+	INTERVAL_MSEC = 2000
+	
 	def wsSend(message):
     		for ws in wss:
       			if not ws.ws_connection.stream.socket:
@@ -103,7 +103,7 @@ if __name__ == "__main__":
 
 ################### Tor gefallen ? ##################################
 ############## Konstanten ###########################################
-	VALUES_IN_AVERAGE = 10
+	VALUES_IN_AVERAGE = 5
 	counter = 0
 	last_distance_list = [1000]*VALUES_IN_AVERAGE
 
@@ -120,7 +120,9 @@ if __name__ == "__main__":
 			print "abstand: ", abstand
                         if abstand < 100.0:
                         	wsSend(str(abstand)+ "Tor" + str(distance) + str(distance))
-				wsSend("{'game': { 'gameid' : 'TRNG-4234512', 'team' : [ {'blue' : {'player' :[{'name' : 'Robert'}], 'goals' : '10'}}, {'red' : {'player' : [{'name' : 'Mirko'}], 'goals' : '10'}}]}}")
+				Game1 = Game("Robert","blue")
+				wsSend("--------------------------------")
+				wsSend(Game1.toString())
 	                        print("Gemessene Entfernung = %.1f cm" % abstand)#print
 			counter = (counter + 1)% VALUES_IN_AVERAGE
                 # Beim Abbruch durch STRG+C resetten
