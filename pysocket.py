@@ -4,54 +4,23 @@ import tornado.websocket
 import tornado.ioloop
 import tornado.web
 import RPi.GPIO as GPIO
-import time
 import pygame
 import json
 from game import Game
-######################################################################
-#####################           GPIO          ########################
-######################################################################
-######### Distanz zwischen Sensor und Oberflaeche  ###################
-def distance():
-        # setze Trigger auf HIGH
-        GPIO.output(GPIO_TRIGGER, True)
-
-        # setze Trigger nach 0.01ms aus LOW
-        time.sleep(0.00001)
-        GPIO.output(GPIO_TRIGGER, False)
-
-        StartZeit = time.time()
-        StopZeit = time.time()
-
-        # speichere Startzeit
-        while GPIO.input(GPIO_ECHO) == 0:
-                StartZeit = time.time()
-
-        # speichere Ankunftszeit
-        while GPIO.input(GPIO_ECHO) == 1:
-                StopZeit = time.time()
-
-        # Zeit Differenz zwischen Start und Ankunft
-        TimeElapsed = StopZeit - StartZeit
-        # mit der Schallgeschwindigkeit (34300 cm/s) multiplizieren
-        # und durch 2 teilen, da hin und zurueck
-        distanz = (TimeElapsed * 34300) / 2
-
-        return distanz
+import sensor
 
 #GPIO Modus (BOARD / BCM)
 GPIO.setmode(GPIO.BCM)
 
 #GPIO Pins zuweisen
-GPIO_TRIGGER = 2
-GPIO_ECHO = 3
+GPIO_TRIGGER_BLUE = 2
+GPIO_ECHO_BLUE = 3
 
 #Richtung der GPIO-Pins festlegen (IN / OUT)
-GPIO.setup(GPIO_TRIGGER, GPIO.OUT)
-GPIO.setup(GPIO_ECHO, GPIO.IN)
+GPIO.setup(GPIO_TRIGGER_BLUE, GPIO.OUT)
+GPIO.setup(GPIO_ECHO_BLUE, GPIO.IN)
 
-
-abstand = distance()
+abstand = sensor.distance(GPIO_TRIGGER_BLUE,GPIO_ECHO_BLUE)
 wss =[]
 
 
@@ -110,7 +79,7 @@ if __name__ == "__main__":
 	counter = 0
 	last_distance_list = [1000]*VALUES_IN_AVERAGE
 
-	def check_distance(get_distance,last_distance_list):
+	def check_distance_blue(get_distance,last_distance_list):
 		global counter									
 		try:    
 			            
@@ -127,7 +96,6 @@ if __name__ == "__main__":
 				Game1.addPlayer("Mirko","red")
 				Game1.addPlayer("Viktor","blue")
 				Game1.addPlayer("Philipp","red")
-				wsSend("--------------------------------")
 				wsSend(Game1.toString())
 	                        print("Gemessene Entfernung = %.1f cm" % abstand)#print
 			counter = (counter + 1)% VALUES_IN_AVERAGE
@@ -144,7 +112,9 @@ if __name__ == "__main__":
     
   	main_loop = tornado.ioloop.IOLoop.instance()
   	sched_dist = tornado.ioloop.PeriodicCallback(
-		lambda: check_distance(distance,last_distance_list),
+		lambda: check_distance_blue(
+    lambda: sensor.distance(GPIO_TRIGGER_BLUE,GPIO_ECHO_BLUE),
+    last_distance_list),
 		INTERVAL_MSEC,
 		io_loop = main_loop)
 
