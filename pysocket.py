@@ -49,6 +49,8 @@ GPIO_ECHO = 3
 #Richtung der GPIO-Pins festlegen (IN / OUT)
 GPIO.setup(GPIO_TRIGGER, GPIO.OUT)
 GPIO.setup(GPIO_ECHO, GPIO.IN)
+
+
 abstand = distance()
 wss =[]
 
@@ -68,6 +70,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
   	def on_message(self, message):
     		print 'Incoming message:', message
 		for ws in wss:
+			print ws
 			if ws == self:
 				self.write_message("You said: " + message)
 			else:
@@ -120,7 +123,10 @@ if __name__ == "__main__":
 			print "abstand: ", abstand
                         if abstand < 100.0:
                         	wsSend(str(abstand)+ "Tor" + str(distance) + str(distance))
-				Game1 = Game("Robert","blue")
+				Game1 = Game()
+				Game1.addPlayer("Mirko","red")
+				Game1.addPlayer("Viktor","blue")
+				Game1.addPlayer("Philipp","red")
 				wsSend("--------------------------------")
 				wsSend(Game1.toString())
 	                        print("Gemessene Entfernung = %.1f cm" % abstand)#print

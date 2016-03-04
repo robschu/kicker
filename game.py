@@ -1,16 +1,12 @@
 class Game(object):
 
-	def __init__(self, player_name, side):
+	def __init__(self):
 		self.gameid = "Training"
-		if(side == "blue"):
-			self.team_blue_player_name1 = player_name
-                        self.team_red_player_name1 = " "
 
-		else:
-			self.team_red_player_name1 = player_name
-                        self.team_blue_player_name1 = " "
-                self.team_blue_player_name2 = " "
-		self.team_red_player_name2 = " "		
+                self.team_red_player_name1 = ' '
+                self.team_blue_player_name1 = ' '
+                self.team_blue_player_name2 = ' '
+		self.team_red_player_name2 = ' '		
 
 		self.team_blue_goals = "0"
 		self.team_red_goals = "0"
@@ -21,18 +17,24 @@ class Game(object):
 		return resultString
 
 	def addPlayer(self, player_name, side):
-		
-		if side == 'blue' and ( self.team_blue_player_name1 != ' ' or self.team_blue_player_name2 != ' '):
+		print side		
+		if side == 'blue' and (self.team_blue_player_name1 == ' ' or self.team_blue_player_name2 == ' '):
+
+			print "side is blue and one player slot is free"
 			if self.team_blue_player_name1 == ' ':
+				print "blue player1"
 				self.team_blue_player_name1 = player_name
 			else:
+				print "side is not blue and player 2"
 				self.team_blue_player_name2 = player_name
-		elif side == 'red' and ( self.team_red_player_name1 != ' ' or self.team_red_player_name2 != ' '):
-                        if self.team_red_player_name1 == ' ':
+		elif side == 'red' and ( self.team_red_player_name1 == ' ' or self.team_red_player_name2 == ' '):
+                        print "red"
+			if self.team_red_player_name1 == ' ':
                                 self.team_red_player_name1 = player_name
                         else:
                                 self.team_red_player_name2 = player_name
-# 		else:
+ 		else:
+			print "side not red or blue"
 #			self.error_message = 'Team is already full'
 	def removePlayer(self, player_name, side):
 		 if side == 'blue': 
