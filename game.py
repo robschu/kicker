@@ -47,7 +47,11 @@ class Game(object):
                                 self.team_red_player_name2 = ' '
                         if self.team_red_player_name1 == player_name:
                                 self.team_red_player_name1 = ' '
-	
+	def goal(self,side):
+		if side == 'red':
+			self.team_red_goals += 1
+		if side == 'blue':
+			self.team_blue_goals += 1
 
  
 		

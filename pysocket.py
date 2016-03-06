@@ -79,6 +79,14 @@ if __name__ == "__main__":
 	counter = 0
 	last_distance_list = [1000]*VALUES_IN_AVERAGE
 
+  Game1 = Game()
+  Game1.addPlayer("Mirko","red")
+  Game1.addPlayer("Viktor","blue")
+  Game1.addPlayer("Robert","blue")
+  Game1.addPlayer("Philipp","red")
+
+  wsSend(Game1.toString())
+
 	def check_distance_blue(get_distance,last_distance_list):
 		global counter									
 		try:    
@@ -91,13 +99,13 @@ if __name__ == "__main__":
 			abstand = abstand / VALUES_IN_AVERAGE
 			print "abstand: ", abstand
                         if abstand < 100.0:
-                        	wsSend(str(abstand)+ "Tor" + str(distance) + str(distance))
-				Game1 = Game()
-				Game1.addPlayer("Mirko","red")
-				Game1.addPlayer("Viktor","blue")
-				Game1.addPlayer("Philipp","red")
-				wsSend(Game1.toString())
+                          Game1.goal("blue")
+                        	wsSend(Game1.toString())
 	                        print("Gemessene Entfernung = %.1f cm" % abstand)#print
+                        if abstand > 200.0:
+                          Game1.goal("red")
+                          wsSend(Game1.toString())
+                          
 			counter = (counter + 1)% VALUES_IN_AVERAGE
                 # Beim Abbruch durch STRG+C resetten
         	except KeyboardInterrupt:
