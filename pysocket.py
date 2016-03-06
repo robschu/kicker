@@ -4,7 +4,6 @@ import tornado.websocket
 import tornado.ioloop
 import tornado.web
 import RPi.GPIO as GPIO
-import pygame
 import json
 from game import Game
 import sensor
@@ -21,7 +20,16 @@ GPIO.setup(GPIO_TRIGGER_BLUE, GPIO.OUT)
 GPIO.setup(GPIO_ECHO_BLUE, GPIO.IN)
 
 abstand = sensor.distance(GPIO_TRIGGER_BLUE,GPIO_ECHO_BLUE)
-wss =[]
+
+Game1 = Game()
+Game1.addPlayer("Mirko","rot")
+Game1.addPlayer("Robert","blau")
+Game1.addPlayer("Viktor","rot")
+Game1.addPlayer("Philipp","blau")
+
+
+
+wss_clients =[]
 
 
 #####################################################################
@@ -32,22 +40,22 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 		 return True
 
 	def open(self):
-   		if self not in wss:
-       			wss.append(self)
+   		if self not in wss_clients:
+       			wss_clients.append(self)
 		print 'New connection was opened', self
     		    		 
   	def on_message(self, message):
     		print 'Incoming message:', message
-		for ws in wss:
-			print ws
-			if ws == self:
+		for ws_client in wss_clients:
+			print ws_client
+			if ws_client == self:
 				self.write_message("You said: " + message)
 			else:
-				ws.write_message("Someone said: " + message) 
+				ws_client.write_message("Someone said: " + message) 
   	def on_close(self):
     		print 'Connection was closed...'
-     		if self in wss:
-      			wss.remove(self)
+     		if self in wss_clients:
+      			wss_clients.remove(self)
 
 
 
@@ -66,59 +74,29 @@ if __name__ == "__main__":
 	INTERVAL_MSEC = 2000
 	
 	def wsSend(message):
-    		for ws in wss:
-      			if not ws.ws_connection.stream.socket:
+    		for ws_client in wss_clients:
+      			if not ws_client.ws_connection.stream.socket:
         			print "Web socket does not exist anymore!!!"
-        			wss.remove(ws)
+        			wss_clients.remove(ws_client)
       			else:
-        			ws.write_message(message)
+        			ws_client.write_message(message)
 
-################### Tor gefallen ? ##################################
-############## Konstanten ###########################################
-	VALUES_IN_AVERAGE = 5
-	counter = 0
-	last_distance_list = [1000]*VALUES_IN_AVERAGE
 
-	def check_distance_blue(get_distance,last_distance_list):
-		global counter									
-		try:    
-			            
-                	tmpdist = get_distance()
-			last_distance_list[counter] = tmpdist
-			abstand = 0
-			for distance in last_distance_list:
-				abstand += distance
-			abstand = abstand / VALUES_IN_AVERAGE
-			print "abstand: ", abstand
-                        if abstand < 100.0:
-                        	wsSend(str(abstand)+ "Tor" + str(distance) + str(distance))
-				Game1 = Game()
-				Game1.addPlayer("Mirko","red")
-				Game1.addPlayer("Viktor","blue")
-				Game1.addPlayer("Philipp","red")
-				wsSend(Game1.toString())
-	                        print("Gemessene Entfernung = %.1f cm" % abstand)#print
-			counter = (counter + 1)% VALUES_IN_AVERAGE
-                # Beim Abbruch durch STRG+C resetten
-        	except KeyboardInterrupt:
-                	print("Messung vom User gestoppt")
-                	GPIO.cleanup()
-
-#####################################################################
 #####################################################################
 ################### Server starten ##################################
 	http_server = tornado.httpserver.HTTPServer(application)
   	http_server.listen(8888)
     
   	main_loop = tornado.ioloop.IOLoop.instance()
-  	sched_dist = tornado.ioloop.PeriodicCallback(
-		lambda: check_distance_blue(
+
+  	goal_watch_blue = tornado.ioloop.PeriodicCallback(
+		lambda: sensor.check_distance_blue(
     lambda: sensor.distance(GPIO_TRIGGER_BLUE,GPIO_ECHO_BLUE),
     last_distance_list),
 		INTERVAL_MSEC,
 		io_loop = main_loop)
 
-  	sched_dist.start()
+  	goal_watch_blue.start()
   	main_loop.start()
 
 #####################################################################
