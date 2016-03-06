@@ -38,13 +38,16 @@ class WSHandler(tornado.websocket.WebSocketHandler):
     		    		 
   	def on_message(self, message):
     		print 'Incoming message:', message
-		for ws in wss:
-			print ws
-			if ws == self:
-				self.write_message("You said: " + message)
-			else:
-				ws.write_message("Someone said: " + message) 
-  	def on_close(self):
+		if message == "increaseBlue":
+			Game1.goal("blue")
+			wsSend(Game1.toString())	
+		if message == "increaseRed":
+			Game1.goal("red")
+			wsSend(Game1.toString())
+		if message == "reset":
+			Game1.resetGoals()
+			wsSend(Game1.toString())
+	def on_close(self):
     		print 'Connection was closed...'
      		if self in wss:
       			wss.remove(self)
@@ -57,13 +60,13 @@ application = tornado.web.Application([
   	(r'/ws', WSHandler),
 ])
 #####################################################################
- 
+
 if __name__ == "__main__":
 #####################################################################
 ################### WEbsocket Nachricht an alle #####################
 #####################################################################
 ############## Konstanten ###########################################
-	INTERVAL_MSEC = 2000
+	INTERVAL_MSEC = 100
 	
 	def wsSend(message):
     		for ws in wss:
@@ -79,16 +82,9 @@ if __name__ == "__main__":
 	counter = 0
 	last_distance_list = [1000]*VALUES_IN_AVERAGE
 
-  Game1 = Game()
-  Game1.addPlayer("Mirko","red")
-  Game1.addPlayer("Viktor","blue")
-  Game1.addPlayer("Robert","blue")
-  Game1.addPlayer("Philipp","red")
-
-  wsSend(Game1.toString())
-
 	def check_distance_blue(get_distance,last_distance_list):
-		global counter									
+		global counter					
+		global Game1				
 		try:    
 			            
                 	tmpdist = get_distance()
@@ -99,12 +95,12 @@ if __name__ == "__main__":
 			abstand = abstand / VALUES_IN_AVERAGE
 			print "abstand: ", abstand
                         if abstand < 100.0:
-                          Game1.goal("blue")
-                        	wsSend(Game1.toString())
+        		        Game1.goal("blue")
+	                       	wsSend(Game1.toString())
 	                        print("Gemessene Entfernung = %.1f cm" % abstand)#print
                         if abstand > 200.0:
-                          Game1.goal("red")
-                          wsSend(Game1.toString())
+                                Game1.goal("red")
+                          	wsSend(Game1.toString())
                           
 			counter = (counter + 1)% VALUES_IN_AVERAGE
                 # Beim Abbruch durch STRG+C resetten
@@ -115,14 +111,21 @@ if __name__ == "__main__":
 #####################################################################
 #####################################################################
 ################### Server starten ##################################
+	Game1 = Game()
+	Game1.addPlayer("Mirko","red")
+	Game1.addPlayer("Viktor","blue")
+	Game1.addPlayer("Robert","blue")
+	Game1.addPlayer("Philipp","red")
+	wsSend(Game1.toString())
+                          
 	http_server = tornado.httpserver.HTTPServer(application)
   	http_server.listen(8888)
     
   	main_loop = tornado.ioloop.IOLoop.instance()
   	sched_dist = tornado.ioloop.PeriodicCallback(
 		lambda: check_distance_blue(
-    lambda: sensor.distance(GPIO_TRIGGER_BLUE,GPIO_ECHO_BLUE),
-    last_distance_list),
+    		lambda: sensor.distance(GPIO_TRIGGER_BLUE,GPIO_ECHO_BLUE),
+    		last_distance_list),
 		INTERVAL_MSEC,
 		io_loop = main_loop)
 
