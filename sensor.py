@@ -34,33 +34,5 @@ def distance(trigger, echo):
         distanz = (TimeElapsed * 34300) / 2
 
         return distanz
-        
-################### Tor gefallen ? ##################################
-############## Konstanten ###########################################
-        VALUES_IN_AVERAGE = 5
-        counter = 0
-        last_distance_list = [1000]*VALUES_IN_AVERAGE
 
 
-def check_distance_blue(get_distance,last_distance_list):
-        global counter                                                                  
-        try:    
-                            
-                tmpdist = get_distance()
-                last_distance_list[counter] = tmpdist
-                abstand = 0
-                for distance in last_distance_list:
-                        abstand += distance
-                abstand = abstand / VALUES_IN_AVERAGE
-                print "abstand: ", abstand
-                if abstand < 100.0:
-                        
-                        wsSend(Game1.toString())
-                        print("Gemessene Entfernung = %.1f cm" % abstand)#print
-                counter = (counter + 1)% VALUES_IN_AVERAGE
-        # Beim Abbruch durch STRG+C resetten
-        except KeyboardInterrupt:
-                print("Messung vom User gestoppt")
-                GPIO.cleanup()
-
-#####################################################################
