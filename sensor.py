@@ -41,10 +41,10 @@ class goalWatch(object):
         	# mit der Schallgeschwindigkeit (34300 cm/s) multiplizieren
         	# und durch 2 teilen, da hin und zurueck
         	distanz = (TimeElapsed * 34300) / 2
-
+                print distanz
         	return distanz
 
-	def check_distance(self,game):				
+	def check_distance(self,game,wsSend):				
 		try:    
 			            
                 	tmpdist = self.distance()

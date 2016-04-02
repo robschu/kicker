@@ -124,7 +124,8 @@ if __name__ == "__main__":
   	main_loop = tornado.ioloop.IOLoop.instance()
   	goal_watch_blue = tornado.ioloop.PeriodicCallback(
 		lambda: goalWatch_blue.check_distance(
-    		Game1),
+    		Game1,
+        wsSend),
 		INTERVAL_MSEC,
 		io_loop = main_loop)
 
