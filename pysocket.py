@@ -66,7 +66,7 @@ if __name__ == "__main__":
 ################### WEbsocket Nachricht an alle #####################
 #####################################################################
 ############## Konstanten ###########################################
-	INTERVAL_MSEC = 100
+	INTERVAL_MSEC = 1000
 	
 	def wsSend(message):
     		for ws in wss:
@@ -80,9 +80,12 @@ if __name__ == "__main__":
 ############## Konstanten ###########################################
 
 	def check_goal(goalWatch):
+		print "start"
 		tempGame = goalWatch.check_distance(Game1)
+		print "end"
 		print tempGame
 		if tempGame != 0:
+			print "wsSend wegen !0"
 			wsSend(tempGame)
 
 #####################################################################
