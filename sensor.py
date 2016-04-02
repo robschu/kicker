@@ -41,10 +41,9 @@ class goalWatch(object):
         	# mit der Schallgeschwindigkeit (34300 cm/s) multiplizieren
         	# und durch 2 teilen, da hin und zurueck
         	distanz = (TimeElapsed * 34300) / 2
-                print distanz
         	return distanz
 
-	def check_distance(self,game,wsSend):				
+	def check_distance(self,game):				
 		try:    
 			            
                 	tmpdist = self.distance()
@@ -55,14 +54,14 @@ class goalWatch(object):
 			abstand = abstand / self.VALUES_IN_AVERAGE
 			print "abstand: ", abstand
                         if abstand < 100.0:
-        		        game.goal("blue")
-	                       	wsSend(game.toString())
+        		            game.goal("blue")
+                            return game
 	                        print("Gemessene Entfernung = %.1f cm" % abstand)#print
                         if abstand > 200.0:
-                                game.goal("red")
-                          	wsSend(game.toString())
+                            return 0 
 			print "REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE"                          
 			self.counter = (self.counter + 1)% self.VALUES_IN_AVERAGE
+            
                 # Beim Abbruch durch STRG+C resetten
         	except KeyboardInterrupt:
                 	print("Messung vom User gestoppt")

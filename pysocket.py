@@ -78,35 +78,12 @@ if __name__ == "__main__":
 
 ################### Tor gefallen ? ##################################
 ############## Konstanten ###########################################
-	VALUES_IN_AVERAGE = 5
-	counter = 0
-	last_distance_list = [1000]*VALUES_IN_AVERAGE
 
-	def check_distance(get_distance,last_distance_list):
-		global counter					
-		global Game1				
-		try:    
-			            
-                	tmpdist = get_distance()
-			last_distance_list[counter] = tmpdist
-			abstand = 0
-			for distance in last_distance_list:
-				abstand += distance
-			abstand = abstand / VALUES_IN_AVERAGE
-			print "abstand: ", abstand
-                        if abstand < 100.0:
-        		        Game1.goal("blue")
-	                       	wsSend(Game1.toString())
-	                        print("Gemessene Entfernung = %.1f cm" % abstand)#print
-                        if abstand > 200.0:
-                                Game1.goal("red")
-                          	wsSend(Game1.toString())
-                          
-			counter = (counter + 1)% VALUES_IN_AVERAGE
-                # Beim Abbruch durch STRG+C resetten
-        	except KeyboardInterrupt:
-                	print("Messung vom User gestoppt")
-                	GPIO.cleanup()
+	def check_goal(goalWatch):
+		tempGame = goalWatch.check_distance(Game1)
+		print tempGame
+		if tempGame != 0:
+			wsSend(tempGame)
 
 #####################################################################
 #####################################################################
@@ -123,9 +100,8 @@ if __name__ == "__main__":
     
   	main_loop = tornado.ioloop.IOLoop.instance()
   	goal_watch_blue = tornado.ioloop.PeriodicCallback(
-		lambda: goalWatch_blue.check_distance(
-    		Game1,
-        wsSend),
+		lambda: check_goal(
+    		goalWatch_blue),
 		INTERVAL_MSEC,
 		io_loop = main_loop)
 
