@@ -82,12 +82,15 @@ if __name__ == "__main__":
 	def check_goal(goalWatch):
 		global Game1
 		tempGame = goalWatch.check_distance(Game1)
-		print tempGame
-		if tempGame != 0:
+		try:
+			newGameString = tempGame.toString()
 			Game1 = tempGame
-			print "wsSend wegen !=0" + Game1.toString()
-			wsSend(Game1.toString())
-
+			print "wsSend wegen !=0" + newGameString
+			wsSend(newGameString)
+		except AttributeError:
+			print "tempGame hatte kein toString()"
+		except:
+			print "unknown error"
 #####################################################################
 #####################################################################
 ################### Server starten ##################################

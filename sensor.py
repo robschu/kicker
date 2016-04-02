@@ -47,24 +47,19 @@ class goalWatch(object):
 		try:    
 			            
                 	tmpdist = self.distance()
-			print tmpdist
-			print self.counter
 			self.last_distance_list[self.counter] = tmpdist
 			abstand = 0
 			for distance in self.last_distance_list:
 				abstand += distance
 			abstand = abstand / self.VALUES_IN_AVERAGE
 			print "abstand: ", abstand
-                        if abstand < 100.0:
-        		        game.goal("blue")
+                        if abstand < 200.0:
+        		        game.goal(str(self.side))
                         	self.counter = (self.counter + 1)% self.VALUES_IN_AVERAGE
-	                        print("Gemessene Entfernung = %.1f cm" % abstand)
+	                        print( ": Gemessene Entfernung = %.1f cm" % abstand)
 				return game
-                        if abstand > 200.0:
-	                        self.counter = (self.counter + 1)% self.VALUES_IN_AVERAGE
-				return 0
-			print "nobody is gonna see this! REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE"                          
-			            
+       			print self.side,"nobody is gonna see this! REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE"                          
+			return 0            
                 # Beim Abbruch durch STRG+C resetten
         	except KeyboardInterrupt:
                 	print("Messung vom User gestoppt")
