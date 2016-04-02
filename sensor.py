@@ -52,13 +52,12 @@ class goalWatch(object):
 			for distance in self.last_distance_list:
 				abstand += distance
 			abstand = abstand / self.VALUES_IN_AVERAGE
-			print "abstand: ", abstand
+			print self.side, "abstand: ", abstand
                         if abstand < 200.0:
         		        game.goal(str(self.side))
                         	self.counter = (self.counter + 1)% self.VALUES_IN_AVERAGE
 	                        print( ": Gemessene Entfernung = %.1f cm" % abstand)
 				return game
-       			print self.side,"nobody is gonna see this! REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE"                          
 			return 0            
                 # Beim Abbruch durch STRG+C resetten
         	except KeyboardInterrupt:

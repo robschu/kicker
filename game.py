@@ -19,8 +19,6 @@ class Game(object):
 	def addPlayer(self, player_name, side):
 #		print side		
 		if side == 'blue' and (self.team_blue_player_name1 == ' ' or self.team_blue_player_name2 == ' '):
-
-			print "side is blue and one player slot is free"
 			if self.team_blue_player_name1 == ' ':
 #				print "blue player1"
 				self.team_blue_player_name1 = player_name

@@ -13,12 +13,19 @@ GPIO.setmode(GPIO.BCM)
 #GPIO Pins zuweisen
 GPIO_TRIGGER_BLUE = 2
 GPIO_ECHO_BLUE = 3
+GPIO_TRIGGER_RED = 14
+GPIO_ECHO_RED = 15
 
 #Richtung der GPIO-Pins festlegen (IN / OUT)
 GPIO.setup(GPIO_TRIGGER_BLUE, GPIO.OUT)
 GPIO.setup(GPIO_ECHO_BLUE, GPIO.IN)
+GPIO.setup(GPIO_TRIGGER_RED, GPIO.OUT)
+GPIO.setup(GPIO_ECHO_RED, GPIO.IN)
+
 
 goalWatch_blue = goalWatch(GPIO_TRIGGER_BLUE,GPIO_ECHO_BLUE,"blue")
+goalWatch_red = goalWatch(GPIO_TRIGGER_RED,GPIO_ECHO_RED,"red")
+
 
 Game1 = Game()
 
@@ -111,6 +118,13 @@ if __name__ == "__main__":
 		INTERVAL_MSEC,
 		io_loop = main_loop)
 
+        goal_watch_red = tornado.ioloop.PeriodicCallback(
+                lambda: check_goal(
+                goalWatch_red),
+	        INTERVAL_MSEC,
+                io_loop = main_loop)
+
+	goal_watch_red.start()
   	goal_watch_blue.start()
   	main_loop.start()
 
