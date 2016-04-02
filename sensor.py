@@ -15,7 +15,11 @@ class goalWatch(object):
 
 	def distance(self):
 
-	        #GPIO Pins zuweisen
+                GPIO.setmode(GPIO.BCM)
+
+		GPIO.setup(self.trigger, GPIO.OUT)
+		GPIO.setup(self.echo, GPIO.IN)
+		print self.trigger	        #GPIO Pins zuweisen
         	GPIO_TRIGGER =self.trigger
         	GPIO_ECHO = self.echo
         	# setze Trigger auf HIGH
