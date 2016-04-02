@@ -4,8 +4,6 @@ import tornado.websocket
 import tornado.ioloop
 import tornado.web
 import RPi.GPIO as GPIO
-import pygame
-import json
 from game import Game
 import sensor
 
@@ -23,7 +21,6 @@ GPIO.setup(GPIO_ECHO_BLUE, GPIO.IN)
 abstand = sensor.distance(GPIO_TRIGGER_BLUE,GPIO_ECHO_BLUE)
 wss =[]
 
-
 #####################################################################
 #####################          Websocket        #####################
 ############## Websocket Event Handler  #############################
@@ -35,7 +32,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
    		if self not in wss:
        			wss.append(self)
 		print 'New connection was opened', self
-    		    		 
+    		self.write_message(Game1.toString())    		 
   	def on_message(self, message):
     		print 'Incoming message:', message
 		if message == "increaseBlue":
@@ -82,7 +79,7 @@ if __name__ == "__main__":
 	counter = 0
 	last_distance_list = [1000]*VALUES_IN_AVERAGE
 
-	def check_distance_blue(get_distance,last_distance_list):
+	def check_distance(get_distance,last_distance_list):
 		global counter					
 		global Game1				
 		try:    
@@ -122,14 +119,14 @@ if __name__ == "__main__":
   	http_server.listen(8888)
     
   	main_loop = tornado.ioloop.IOLoop.instance()
-  	sched_dist = tornado.ioloop.PeriodicCallback(
+  	goal_watch_blue = tornado.ioloop.PeriodicCallback(
 		lambda: check_distance_blue(
     		lambda: sensor.distance(GPIO_TRIGGER_BLUE,GPIO_ECHO_BLUE),
     		last_distance_list),
 		INTERVAL_MSEC,
 		io_loop = main_loop)
 
-  	sched_dist.start()
+  	goal_watch_blue.start()
   	main_loop.start()
 
 #####################################################################
