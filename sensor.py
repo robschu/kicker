@@ -44,7 +44,7 @@ class goalWatch(object):
 
         	return distanz
 
-	def check_distance_blue(self,game):				
+	def check_distance(self,game):				
 		try:    
 			            
                 	tmpdist = self.distance()

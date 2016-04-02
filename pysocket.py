@@ -5,7 +5,7 @@ import tornado.ioloop
 import tornado.web
 import RPi.GPIO as GPIO
 from game import Game
-import sensor
+from sensor import goalWatch
 
 #GPIO Modus (BOARD / BCM)
 GPIO.setmode(GPIO.BCM)
@@ -18,7 +18,10 @@ GPIO_ECHO_BLUE = 3
 GPIO.setup(GPIO_TRIGGER_BLUE, GPIO.OUT)
 GPIO.setup(GPIO_ECHO_BLUE, GPIO.IN)
 
-abstand = sensor.distance(GPIO_TRIGGER_BLUE,GPIO_ECHO_BLUE)
+goalWatch_blue = goalWatch(GPIO_TRIGGER_BLUE,GPIO_ECHO_BLUE,"blue")
+
+Game1 = Game()
+
 wss =[]
 
 #####################################################################
@@ -108,7 +111,7 @@ if __name__ == "__main__":
 #####################################################################
 #####################################################################
 ################### Server starten ##################################
-	Game1 = Game()
+	
 	Game1.addPlayer("Mirko","red")
 	Game1.addPlayer("Viktor","blue")
 	Game1.addPlayer("Robert","blue")
@@ -120,9 +123,8 @@ if __name__ == "__main__":
     
   	main_loop = tornado.ioloop.IOLoop.instance()
   	goal_watch_blue = tornado.ioloop.PeriodicCallback(
-		lambda: check_distance_blue(
-    		lambda: sensor.distance(GPIO_TRIGGER_BLUE,GPIO_ECHO_BLUE),
-    		last_distance_list),
+		lambda: goalWatch_blue.check_distance(
+    		Game1),
 		INTERVAL_MSEC,
 		io_loop = main_loop)
 
