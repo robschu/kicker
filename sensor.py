@@ -35,7 +35,8 @@ class goalWatch(object):
         	# speichere Ankunftszeit
         	while GPIO.input(GPIO_ECHO) == 1:
         	        StopZeit = time.time()
-
+			if (StopZeit - StartZeit) > 0.02:
+				break
         	# Zeit Differenz zwischen Start und Ankunft
         	TimeElapsed = StopZeit - StartZeit
         	# mit der Schallgeschwindigkeit (34300 cm/s) multiplizieren
@@ -53,11 +54,12 @@ class goalWatch(object):
 				abstand += distance
 			abstand = abstand / self.VALUES_IN_AVERAGE
 			print self.side, "abstand: ", abstand
-                        if abstand < 200.0:
+                        if abstand < 3.9:
         		        game.goal(str(self.side))
                         	self.counter = (self.counter + 1)% self.VALUES_IN_AVERAGE
 	                        print( ": Gemessene Entfernung = %.1f cm" % abstand)
 				return game
+                        self.counter = (self.counter + 1)% self.VALUES_IN_AVERAGE
 			return 0            
                 # Beim Abbruch durch STRG+C resetten
         	except KeyboardInterrupt:
