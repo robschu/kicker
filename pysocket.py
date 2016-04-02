@@ -80,13 +80,13 @@ if __name__ == "__main__":
 ############## Konstanten ###########################################
 
 	def check_goal(goalWatch):
-		print "start"
+		global Game1
 		tempGame = goalWatch.check_distance(Game1)
-		print "end"
 		print tempGame
 		if tempGame != 0:
-			print "wsSend wegen !0"
-			wsSend(tempGame)
+			Game1 = tempGame
+			print "wsSend wegen !=0" + Game1.toString()
+			wsSend(Game1.toString())
 
 #####################################################################
 #####################################################################

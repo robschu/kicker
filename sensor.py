@@ -9,7 +9,7 @@ class goalWatch(object):
 		self.trigger = trigger
 		self.echo = echo
 		self.side = side
-		self.VALUES_IN_AVERAGE = 5
+		self.VALUES_IN_AVERAGE = 1
 		self.counter = 0
 		self.last_distance_list = [1000]*self.VALUES_IN_AVERAGE
 
@@ -40,15 +40,15 @@ class goalWatch(object):
         	TimeElapsed = StopZeit - StartZeit
         	# mit der Schallgeschwindigkeit (34300 cm/s) multiplizieren
         	# und durch 2 teilen, da hin und zurueck
-		print TimeElapsed
         	distanz = (TimeElapsed * 34300) / 2
-		print distanz
         	return distanz
 
 	def check_distance(self,game):				
 		try:    
 			            
                 	tmpdist = self.distance()
+			print tmpdist
+			print self.counter
 			self.last_distance_list[self.counter] = tmpdist
 			abstand = 0
 			for distance in self.last_distance_list:
@@ -57,13 +57,14 @@ class goalWatch(object):
 			print "abstand: ", abstand
                         if abstand < 100.0:
         		        game.goal("blue")
-                                return game
-	                        print("Gemessene Entfernung = %.1f cm" % abstand)#print
+                        	self.counter = (self.counter + 1)% self.VALUES_IN_AVERAGE
+	                        print("Gemessene Entfernung = %.1f cm" % abstand)
+				return game
                         if abstand > 200.0:
-                                return 0 
-			print "REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE"                          
-			self.counter = (self.counter + 1)% self.VALUES_IN_AVERAGE
-            
+	                        self.counter = (self.counter + 1)% self.VALUES_IN_AVERAGE
+				return 0
+			print "nobody is gonna see this! REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE"                          
+			            
                 # Beim Abbruch durch STRG+C resetten
         	except KeyboardInterrupt:
                 	print("Messung vom User gestoppt")
