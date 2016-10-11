@@ -43,6 +43,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
        			wss.append(self)
 		print 'New connection was opened', self
     		self.write_message(Game1.toString())    		 
+	
   	def on_message(self, message):
     		print 'Incoming message:', message
 		if message == "increaseBlue":
@@ -73,7 +74,7 @@ if __name__ == "__main__":
 ################### WEbsocket Nachricht an alle #####################
 #####################################################################
 ############## Konstanten ###########################################
-	INTERVAL_MSEC = 50
+	INTERVAL_MSEC = 80
 		
 	def wsSend(message):
     		for ws in wss:
@@ -98,10 +99,11 @@ if __name__ == "__main__":
 		try:
 			newGameString = tempGame.toString()
 			Game1 = tempGame
-			print "wsSend wegen !=0" + newGameString
+			print "Tor!" 
 			wsSend(newGameString)
 		except AttributeError:
-			print "tempGame hatte kein toString()"
+			pass
+			#print "tempGame hatte kein toString()"
 		except:
 			print "unknown error"
 #####################################################################
